@@ -3,7 +3,11 @@ This is meant for testing only.
 Some ComfyUI nodes, e.g. the "Load LoRA", "CLIP Set Last Layer" nodes, can now be connected to the wrapper.
 You can now use multiple LoRAs on the node and Clip skip is also effective.
 
-## Original README
+## Sample Workflow
+![screenshot](https://github.com/bushc7/ComfyUI-Diffusers-X-Adapter/assets/173649814/a37b1636-a144-4a2c-85a4-b05da293c502)
+
+
+# Original README
 # ComfyUI wrapper node for X-Adapter diffusers implementation.
 
 This is meant for testing only, with the ability to use same models and python env as ComfyUI, it is NOT a proper ComfyUI implementation!
