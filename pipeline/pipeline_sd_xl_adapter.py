@@ -598,6 +598,8 @@ class StableDiffusionXLAdapterPipeline(DiffusionPipeline, FromSingleFileMixin, L
             latents_sd1_5: Optional[torch.FloatTensor] = None,
             prompt_embeds: Optional[torch.FloatTensor] = None,
             negative_prompt_embeds: Optional[torch.FloatTensor] = None,
+            prompt_embeds_sd_1_5: Optional[torch.FloatTensor] = None,
+            negative_prompt_embeds_sd_1_5: Optional[torch.FloatTensor] = None,
             prompt_embeds_sd1_5: Optional[torch.FloatTensor] = None,
             negative_prompt_embeds_sd1_5: Optional[torch.FloatTensor] = None,
             pooled_prompt_embeds: Optional[torch.FloatTensor] = None,
@@ -798,8 +800,8 @@ class StableDiffusionXLAdapterPipeline(DiffusionPipeline, FromSingleFileMixin, L
             num_images_per_prompt,
             do_classifier_free_guidance,
             negative_prompt,
-            prompt_embeds=prompt_embeds_sd1_5,
-            negative_prompt_embeds=negative_prompt_embeds_sd1_5,
+            prompt_embeds=prompt_embeds_sd_1_5,
+            negative_prompt_embeds=negative_prompt_embeds_sd_1_5,
             lora_scale=text_encoder_lora_scale,
         )
         # todo: implement prompt_embeds for SD1.5
