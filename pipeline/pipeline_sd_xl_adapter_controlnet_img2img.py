@@ -610,6 +610,8 @@ class StableDiffusionXLAdapterControlnetI2IPipeline(DiffusionPipeline, FromSingl
             latents_sd1_5: Optional[torch.FloatTensor] = None,
             prompt_embeds: Optional[torch.FloatTensor] = None,
             negative_prompt_embeds: Optional[torch.FloatTensor] = None,
+            prompt_embeds_sd_1_5: Optional[torch.FloatTensor] = None,
+            negative_prompt_embeds_sd_1_5: Optional[torch.FloatTensor] = None,
             pooled_prompt_embeds: Optional[torch.FloatTensor] = None,
             negative_pooled_prompt_embeds: Optional[torch.FloatTensor] = None,
             output_type: Optional[str] = "pil",
