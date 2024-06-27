@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pprint
+
 import inspect
 import os
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
@@ -232,7 +234,8 @@ class StableDiffusionXLAdapterControlnetPipeline(DiffusionPipeline, FromSingleFi
 
         hook = None
         for cpu_offloaded_model in model_sequence:
-            _, hook = cpu_offload_with_hook(cpu_offloaded_model, device, prev_module_hook=hook)
+            if cpu_offloaded_model is not None:
+                _, hook = cpu_offload_with_hook(cpu_offloaded_model, device, prev_module_hook=hook)
 
         # We'll offload the last model manually.
         self.final_offload_hook = hook
@@ -345,6 +348,9 @@ class StableDiffusionXLAdapterControlnetPipeline(DiffusionPipeline, FromSingleFi
                     output_hidden_states=True,
                 )
 
+                print(f"text_input_ids -- {text_input_ids.shape}:")
+                pprint.pprint(text_input_ids)
+
                 # We are only ALWAYS interested in the pooled output of the final text encoder
                 pooled_prompt_embeds = prompt_embeds[0]
                 prompt_embeds = prompt_embeds.hidden_states[-2]
@@ -405,6 +411,11 @@ class StableDiffusionXLAdapterControlnetPipeline(DiffusionPipeline, FromSingleFi
 
             negative_prompt_embeds = torch.concat(negative_prompt_embeds_list, dim=-1)
 
+        print(f"prompt_embeds -- {prompt_embeds.shape}:")
+        pprint.pprint(prompt_embeds)
+        print(f"negative_prompt_embeds -- {negative_prompt_embeds.shape}:")
+        pprint.pprint(negative_prompt_embeds)
+        
         prompt_embeds = prompt_embeds.to(dtype=self.text_encoder_2.dtype, device=device)
         bs_embed, seq_len, _ = prompt_embeds.shape
         # duplicate text embeddings for each generation per prompt, using mps friendly method
@@ -612,6 +623,8 @@ class StableDiffusionXLAdapterControlnetPipeline(DiffusionPipeline, FromSingleFi
         latents_sd1_5: Optional[torch.FloatTensor] = None,
         prompt_embeds: Optional[torch.FloatTensor] = None,
         negative_prompt_embeds: Optional[torch.FloatTensor] = None,
+        prompt_embeds_sd_1_5: Optional[torch.FloatTensor] = None,
+        negative_prompt_embeds_sd_1_5: Optional[torch.FloatTensor] = None,
         pooled_prompt_embeds: Optional[torch.FloatTensor] = None,
         negative_pooled_prompt_embeds: Optional[torch.FloatTensor] = None,
         output_type: Optional[str] = "pil",
@@ -882,14 +895,20 @@ class StableDiffusionXLAdapterControlnetPipeline(DiffusionPipeline, FromSingleFi
             lora_scale=text_encoder_lora_scale,
         )
 
+        #with open('D:\\prompt_embeds.txt', 'w') as file:
+        #    pprint.pprint(prompt_embeds, stream=file)
+
+        #with open('D:\\pooled_prompt_embeds.txt', 'w') as file:
+        #    pprint.pprint(pooled_prompt_embeds, stream=file)
+
         prompt_embeds_sd1_5 = self._encode_prompt_sd1_5(
             prompt if prompt_sd1_5 is None else prompt_sd1_5,
             device,
             num_images_per_prompt,
             do_classifier_free_guidance,
             negative_prompt,
-            prompt_embeds=None,
-            negative_prompt_embeds=None,
+            prompt_embeds=prompt_embeds_sd_1_5,
+            negative_prompt_embeds=negative_prompt_embeds_sd_1_5,
             lora_scale=text_encoder_lora_scale,
         )
         # todo: implement prompt_embeds for SD1.5
